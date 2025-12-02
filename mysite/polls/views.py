@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Question, Choice
-from django.template import loader
 from django.urls import reverse
 from django.views import generic
-
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -37,3 +37,22 @@ def vote(request, question_id):
         selected_choice.votes += 1
         selected_choice.save()
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+
+@login_required
+def profile(request):
+    return render(request, "polls/profile.html")
+
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect("polls:profile")
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, "polls/edit_profile.html", {"form": form})

@@ -1,14 +1,30 @@
-<form action="{% url 'polls:vote' question.id %}" method="post">
+{% extends "polls/base_generic.html" %}
+{% block title %}{{ question.question_text }}{% endblock %}
+{% block content %}
+
+<h2 class="mb-3">{{ question.question_text }}</h2>
+
+{% if error_message %}
+<div class="alert alert-danger">{{ error_message }}</div>
+{% endif %}
+
+<form action="{% url 'polls:vote' question.id %}" method="post" class="card p-4">
     {% csrf_token %}
-    <fieldset>
-        <legend>
-            <h1>{{question.question_text}}</h1>
-        </legend>
-        {% if error_message %}<p><strong> {{error_message}}</strong></p>{% endif %}
-        {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{forloop.counter}}" value="{{choice.id}}">
-        <label for="choice{{forloop.counter}}">{{choice.choice_text}}</label><br>
-        {% endfor %}
-    </fieldset>
-<input type="submit" value="Vote">
+
+    {% for choice in question.choice_set.all %}
+        <div class="form-check mb-2">
+            <input class="form-check-input"
+                   type="radio"
+                   name="choice"
+                   id="choice{{ forloop.counter }}"
+                   value="{{ choice.id }}">
+            <label class="form-check-label" for="choice{{ forloop.counter }}">
+                {{ choice.choice_text }}
+            </label>
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary mt-3">Голосовать</button>
 </form>
+
+{% endblock %}

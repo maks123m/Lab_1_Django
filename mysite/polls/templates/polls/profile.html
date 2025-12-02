@@ -1,0 +1,22 @@
+{% extends "polls/base_generic.html" %}
+{% block content %}
+
+<h1 class="mb-4">Профиль</h1>
+
+<div class="card p-3" style="max-width: 400px;">
+    <div class="text-center">
+        {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" class="img-thumbnail mb-3" width="150">
+        {% else %}
+            <p>Аватар не установлен</p>
+        {% endif %}
+    </div>
+
+    <h5 class="text-center">{{ user.username }}</h5>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'polls:edit_profile' %}" class="btn btn-primary btn-sm">Редактировать</a>
+    </div>
+</div>
+
+{% endblock %}
